@@ -4,16 +4,8 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
-//const dotenv = require('dotenv')
-
-
-
-//const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.n50q4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-
 
 
 const app = express();
@@ -44,8 +36,6 @@ client.connect(err => {
             })
     })
 
-
-
     app.post('/AppointmentByDate', (req, res) => {
         const date = req.body;
         const email = req.body.email;
@@ -61,10 +51,7 @@ client.connect(err => {
                         res.send(documents);
                     })
             })
-
-
     })
-    //client.close();
 
     app.post('/AddADoctors', (req, res) => {
         const file = req.files.file;
@@ -78,28 +65,19 @@ client.connect(err => {
             size: file.size,
             img: Buffer.from(encImg, 'base64')
         };
-        // file.mv(`${__dirname}/doctors/${file.name}`, err => {
-        //     if(err){
-        //         console.log(err);
-        //         return res.status(500).send({message:'fail to upload image'});
-        //     } 
-        //     return res.send({name: file.name, path: `/${file.name}`})  
-        // })
 
         doctorCollection.insertOne({ name, email, image })
             .then(result => {
                 res.send(result.insertedCount > 0);
             })
     })
-    //
+
     app.get('/doctors', (req, res) => {
         doctorCollection.find({})
             .toArray((err, documents) => {
                 res.send(documents);
             })
     });
-
-    //
 
     app.post('/isDoctor', (req, res) => {
         const email = req.body.email;
@@ -110,13 +88,6 @@ client.connect(err => {
     })
 
 });
-
-
-
-
-
-
-
 
 app.get('/', (req, res) => {
     res.send('HELLO I AM WORKING')
